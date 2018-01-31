@@ -4,36 +4,26 @@ import java.util.*;
 
 public class CarManager {
 
-    List<Car> carDb = Arrays.asList(
-            new Car("1", "Golf III", "Volkswagen"),
-            new Car("2", "Multipla", "Fiat"),
-            new Car("3", "Megan", "Renault"));
+    private final CarDao carDao;
+    private final CarFormater carFormater;
+    private final CarRater carRater;
 
-    public Optional<Car> getFromDb(String carId) {
-        return carDb.stream()
-                .filter(c -> c.getId().equals(carId))
-                .findFirst();
+    public CarManager(CarDao carDao, CarFormater carFormater, CarRater carRater) {
+        this.carDao = carDao;
+        this.carFormater = carFormater;
+        this.carRater = carRater;
+    }
+
+    public Optional<Car> getById(String carId) {
+        return carDao.findById(carId);
     }
 
     public String getCarName() {
-        return carDb.stream()
-                .map(c -> c.getBrand() + "" + c.getModel())
-                .reduce((prev, next) -> prev + "," + next)
-        .orElse("Sorry. No car");
+        return carFormater.getCarName(carDao.findAll());
     }
 
-    public Optional<Car> getBestCar(){
-        Map<Car, Integer> carRates =  new HashMap<>();
-        Car renault =  new Car("3", "Megan", "Renault");
-        Car fiat =  new Car("2", "Multipla", "Fiat");
-        Car volks = new Car("1", "Golf III", "Volkswagen");
-
-        carRates.put(renault,3);
-        carRates.put(fiat,2);
-        carRates.put(volks,1);
-
-        return carDb.stream()
-                .max((c1,c2)-> Integer.compare(carRates.get(c1),carRates.get(c2)));
+    public Optional<Car> getBestCar() {
+        return carRater.getBestCar(carDao.findAll());
     }
 
 }
