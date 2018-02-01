@@ -1,7 +1,7 @@
 package test;
 
 
-import main.*;
+import singleResponsiblePrinciple.main.*;
 import org.junit.Before;
 import org.junit.Test;
 
